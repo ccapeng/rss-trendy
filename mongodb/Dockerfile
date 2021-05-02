@@ -7,6 +7,7 @@ RUN dpkg-divert --local --rename --add /sbin/initctl
 RUN ln -s /bin/true /sbin/initctl
 
 RUN apt-get update
+RUN apt-get install gnupg
 RUN apt-get install mongodb-10gen
 
 RUN mkdir -p /data/db
