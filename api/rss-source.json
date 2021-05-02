@@ -1,0 +1,14 @@
+[
+    {
+        "name": "New York Times",
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+    },
+    {
+        "name": "CNN",
+        "url": "http://rss.cnn.com/rss/cnn_topstories.rss"
+    },
+    {
+        "name": "Washington Post",
+        "url": "http://feeds.washingtonpost.com/rss/rss_morning-mix?itid=lk_inline_manual_41"
+    }
+]
