@@ -2,7 +2,7 @@
 #COPY default.conf /etc/nginx/conf.d/default.conf
 
 #FROM dockerfile/ubuntu
-FROM nginx
+FROM ubuntu
 
 # Install Nginx.
 RUN \
