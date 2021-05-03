@@ -1,7 +1,9 @@
 import { default as mongodb } from 'mongodb';
 const MongoClient = mongodb.MongoClient;
 
-const mongoUrl = 'mongodb://localhost:27017/';
+//const mongoUrl = 'mongodb://localhost:27017/';
+const mongoUrl = 'mongodb://mongo:27017/';
+
 var client, db;
 
 const initDB = async() => {

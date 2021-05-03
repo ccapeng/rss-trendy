@@ -17,7 +17,7 @@ services:
     ports:
       - "5000:5000"
     links:
-      - mongodb
+      - mongo
   client:
     image: rss_trendy_client
     build:
