@@ -12,4 +12,4 @@ RUN apt-get install -y mongodb
 RUN mkdir -p /data/db
 
 EXPOSE 27017
-CMD ["usr/bin/mongod", "--smallfiles"]
+CMD ["usr/bin/mongod", "--bind_ip_all", "--smallfiles"]
