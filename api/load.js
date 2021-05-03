@@ -6,13 +6,13 @@ const parser = new Parser();
 
 const getFeedSources = async() => {
     let sources = await db.collection("rsssource").find().toArray();
-    console.log("sources", sources);
     if (sources.length == 0) {
         try {
             const data = fs.readFileSync('./rss-source.json', 'utf8');
             sources = JSON.parse(data);
             const sourceCollection = db.collection("rsssource")
-            sourceCollection.insertMany(sources);
+            await sourceCollection.insertMany(sources);
+            console.log("Insert sources:", sources);
         } catch (err) {
             console.log(`Error sources: ${err}`);
         }
@@ -29,19 +29,21 @@ const filterData = (feed, url) => {
     //special cases in nytimes
     if (url.indexOf("nytimes.com") > -1) {
         feed.items.forEach((item, index, object) => {
+            // remove bad data
             delete item.categories;
-            console.log(item.link);
+            // items excluded
             if (
                 item.link.indexOf("/crosswords") > -1 ||
                 item.link.indexOf("/puzzles/") > -1
             ) {
-                console.log("delete");
                 object.splice(index, 1);
             }
         });
     }
     feed.items = feed.items.filter(item => {
         if (item.pubDate != null) {
+
+            // use isoDate as pubDate
             if (item.isoDate != null) {
                 item.pubDate = new Date(item.isoDate);
             } else {
@@ -87,14 +89,18 @@ const loadFeedItems = async() => {
             insertedCount += newItems.length;
             const result = await itemCollection.insertMany(newItems);
             if (result && result.insertedIds) {
-                console.log(`Insert ${source.url}`, result.insertedIds);
+                console.log(`Inserted items from ${source.url}`, result.insertedIds);
             }
         }
     }
     console.log("Inserted items:", insertedCount);
 };
 
-const minutes = 3, reloadInterval = minutes * 60 * 1000;
+// load rss news in every 3 minutes
+// let minutes = 3;
+let minutes =  process.env.rssReloadInterval || 3;
+console.log("RSS reload interval:", minutes);
+const reloadInterval = minutes * 60 * 1000;
 const reloadFeedItems = async() => {
     loadFeedItems();
     setInterval(function() {
