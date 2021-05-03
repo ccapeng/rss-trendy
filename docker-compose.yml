@@ -17,7 +17,7 @@ services:
     #env_file:
     #  - ./api/dev.env
     environment:
-      - mongoDBServer="mongoDB"
+      - mongoDBServer=mongoDB
     ports:
       - "5000:5000"
     links:
