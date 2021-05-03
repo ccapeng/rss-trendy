@@ -4,6 +4,8 @@ services:
     image: mongodb
     build:
       context: ./mongodb
+    ports:
+      - "27017:27017"
   api:
     image: rss_trendy_api
     build:
