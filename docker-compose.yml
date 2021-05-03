@@ -4,13 +4,13 @@ services:
     image: mongodb
     build:
       context: ./mongodb
-  nginx:
-    image: ngnix
-    restart: always
-    build:
-      context: ./nginx
-    ports:
-      - "80:80"
+  # nginx:
+  #   image: ngnix
+  #   restart: always
+  #   build:
+  #     context: ./nginx
+  #   ports:
+  #     - "80:80"
   api:
     image: rss_trendy_api
     build:
@@ -31,3 +31,5 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
+      ports:
+        - "3000:3000"
