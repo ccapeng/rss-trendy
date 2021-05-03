@@ -16,6 +16,8 @@ services:
       - ./api/dev.env
     ports:
       - "5000:5000"
+    links:
+      - mongodb
   client:
     image: rss_trendy_client
     build:
