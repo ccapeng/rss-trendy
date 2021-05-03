@@ -58,7 +58,7 @@ const filterData = (feed, url) => {
 }
 
 const loadFeedItems = async() => {
-    console.log("load feed items:", Date());
+    console.log("Loading items:", Date());
     const itemCollection = db.collection("rssitem");
     let feedSources = await getFeedSources();
     let feedItems = await getFeedItems(itemCollection);

@@ -10,7 +10,7 @@ console.log("mongoUrl:", mongoUrl);
 var client, db;
 
 const initDB = async() => {
-    console.log("initDB");
+    console.log("initDB...");
     try{
         client = await MongoClient.connect(
             mongoUrl, 
