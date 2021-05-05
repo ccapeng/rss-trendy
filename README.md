@@ -25,7 +25,6 @@ RSS news feed from New York Times, Washington Post, CNN.
 
 ## Enhancements
 Some other features are coming soon.
-- Test
 - Log System.
 - Elastic Search.
 - Web server.
