@@ -1,6 +1,7 @@
+import fs from 'fs';
 import Parser from "rss-parser";
 import { db } from "./db.js";
-import fs from 'fs';
+import cron from 'node-cron';
 
 const parser = new Parser();
 
@@ -94,19 +95,19 @@ const loadFeedItems = async() => {
             }
         }
     }
-    console.log("Inserted items:", insertedCount);
+    console.log("Inserted items:", insertedCount, Date());
 };
 
-// load rss news in every 3 minutes
-// let minutes = 3;
-let minutes =  process.env.rssReloadInterval || 3;
-console.log("RSS reload interval:", minutes);
-const reloadInterval = minutes * 60 * 1000;
+// Task scheduling
+let minutes =  process.env.rssReloadInterval || 5;
 const reloadFeedItems = async() => {
     loadFeedItems();
-    setInterval(function() {
+    let interval = Math.ceil(60 / minutes);
+    let schedulePattern = `*/${interval} * * * *`;
+    console.log("Schedule Pattern:", schedulePattern);
+    cron.schedule(schedulePattern, () => {
         loadFeedItems();
-    }, reloadInterval);
+    });
 }
 
 export {

@@ -2,11 +2,11 @@ import Request from "./request";
 
 const RssFeedService = {
   list: () => {
-    let url = "api/rssFeeds";
+    let url = "api/rssfeeds";
     return Request.get(url);
   },
   get: (guid) => {
-    let url = `api/rssFeeds/${guid}`;
+    let url = `api/rssfeeds/${guid}`;
     return Request.get(url);
   }
 }

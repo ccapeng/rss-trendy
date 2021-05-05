@@ -7,6 +7,10 @@ RSS news feed from New York Times, Washington Post, CNN.
 ## Backend  
 - It's nodejs.
 - Run at local host port 5000.
+- REST URL end points
+    - http://127.0.0.1:5000/
+    - http://127.0.0.1:5000/api/rssfeeds
+- REST URL access log is under `log` folder.
 
 ## Frontend  
 - It's React.
