@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "export DB=rss-feed-test|| set DB=rss-feed-test&& mocha --timeout 10000",
+    "env-db": "export DB=rss-feed-test|| set DB=rss-feed-test",
+    "test": "npm run env-db & mocha --timeout 10000",
     "dev": "nodemon server.js"
   },
   "author": "",
