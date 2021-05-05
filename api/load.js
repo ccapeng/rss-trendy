@@ -89,7 +89,8 @@ const loadFeedItems = async() => {
             insertedCount += newItems.length;
             const result = await itemCollection.insertMany(newItems);
             if (result && result.insertedIds) {
-                console.log(`Inserted items from ${source.url}`, result.insertedIds);
+                //console.log(`Inserted items from ${source.url}`, result.insertedIds);
+                console.log(`Inserted items from ${source.url}`);
             }
         }
     }
@@ -109,5 +110,6 @@ const reloadFeedItems = async() => {
 }
 
 export {
-    reloadFeedItems
+    reloadFeedItems,
+    loadFeedItems
 }
