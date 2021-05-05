@@ -85,12 +85,11 @@ const loadFeedItems = async() => {
             }
         });
 
-        // Batch insert
+        // batch insert
         if (newItems.length > 1) {
             insertedCount += newItems.length;
             const result = await itemCollection.insertMany(newItems);
             if (result && result.insertedIds) {
-                //console.log(`Inserted items from ${source.url}`, result.insertedIds);
                 console.log(`Inserted items from ${source.url}`);
             }
         }
@@ -98,12 +97,20 @@ const loadFeedItems = async() => {
     console.log("Inserted items:", insertedCount, Date());
 };
 
-// Task scheduling
+// task scheduling
 let minutes =  process.env.rssReloadInterval || 5;
 const reloadFeedItems = async() => {
-    loadFeedItems();
-    let interval = Math.ceil(60 / minutes);
-    let schedulePattern = `*/${interval} * * * *`;
+    await loadFeedItems();
+    let now = new Date().getMinutes();
+    let mod = now % minutes;
+    let i = mod;
+    let minuteList = [];
+    do {
+        minuteList.push(i);
+        i = i + minutes;
+    } while (i < 60);
+    let minuteListStr = minuteList.join(",");
+    let schedulePattern = `${minuteListStr} * * * *`;
     console.log("Schedule Pattern:", schedulePattern);
     cron.schedule(schedulePattern, () => {
         loadFeedItems();
