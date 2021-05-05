@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "export DB=rss-feed-test|| set DB=rss-feed-test&& mocha --timeout 10000",
     "dev": "nodemon server.js"
   },
   "author": "",
@@ -15,5 +15,11 @@
     "nodemon": "^2.0.7",
     "rss-parser": "^3.12.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/chai": "^4.2.17",
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.3.2"
+  }
 }

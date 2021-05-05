@@ -12,7 +12,7 @@ const getFeedSources = async() => {
             sources = JSON.parse(data);
             const sourceCollection = db.collection("rsssource")
             await sourceCollection.insertMany(sources);
-            console.log("Insert sources:", sources);
+            console.log("Insert sources:", sources.length);
         } catch (err) {
             console.log(`Error sources: ${err}`);
         }

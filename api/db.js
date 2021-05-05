@@ -9,14 +9,18 @@ console.log("mongoUrl:", mongoUrl);
 
 var client, db;
 
-const initDB = async() => {
-    console.log("initDB...");
+const initDB = async(dbName) => {
+    console.log("init DB:", dbName);
     try{
         client = await MongoClient.connect(
             mongoUrl, 
-            {useNewUrlParser: true}
+            {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            }
         );
-        db = client.db('rss-feed');
+        //db = client.db('rss-feed');
+        db = client.db(dbName);
     }
     catch(err) {
         console.error(err); 
@@ -24,9 +28,10 @@ const initDB = async() => {
     }
 }
 
-await initDB();
+//await initDB();
 
 export {
     client,
-    db
+    db,
+    initDB
 }

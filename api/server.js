@@ -1,8 +1,12 @@
+import { initDB } from "./db.js";
 import app from "./app.js";
 import { reloadFeedItems } from "./load.js";
 
-reloadFeedItems();
+let db = process.env.DB || "rss-feed";
+await initDB(db);
+await reloadFeedItems();
 
-const server = app.listen(5000, () => {
+let port = process.env.PORT || 5000;
+export const server = app.listen(port, () => {
   console.log(`Server start: ${server.address().port}`);
-});
+});  
