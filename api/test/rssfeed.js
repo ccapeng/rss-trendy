@@ -2,8 +2,8 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
-import { db } from "../db.js";
-import { loadFeedItems } from "../load.js";
+import { db } from "../services.db.js";
+import { loadFeedItems } from "../services/load.js";
 import { server } from '../server.js';
 
 let should = chai.should();

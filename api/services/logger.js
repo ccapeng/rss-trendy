@@ -2,8 +2,15 @@ import appRoot from 'app-root-path';
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 
+const dateTimeOptions = { 
+  dateStyle: "short",
+  timeStyle: "long",
+  timeZone: "America/New_York"
+};
+const dateTimeFormatter = new Intl.DateTimeFormat('en-US', dateTimeOptions)
+
 // define the custom settings for each transport (file, console)
-const options = {
+const fileOptions = {
   file: {
     level: 'info',
     filename: `${appRoot}/logs/app.log`,
@@ -38,7 +45,7 @@ let logger;
 if (process.env.logging === 'off') {
   logger = winston.createLogger({
     transports: [
-      new winston.transports.File(options.file),
+      new winston.transports.File(fileOptions.file),
     ],
     exitOnError: false, // do not exit on handled exceptions
   });
@@ -46,8 +53,8 @@ if (process.env.logging === 'off') {
   logger = winston.createLogger({
     transports: [
       //new winston.transports.File(options.file),
-      new (winston.transports.DailyRotateFile)(options.rotateFile),
-      new (winston.transports.Console)(options.console),
+      new (winston.transports.DailyRotateFile)(fileOptions.rotateFile),
+      new (winston.transports.Console)(fileOptions.console),
     ],
     exitOnError: false, // do not exit on handled exceptions
   });
@@ -61,3 +68,6 @@ logger.stream = {
 };
 
 export default logger;
+export {
+  dateTimeFormatter
+}

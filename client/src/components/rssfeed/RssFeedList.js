@@ -53,8 +53,9 @@ const RSSFeedList = () => {
         <h1 className="sr-only">RSS</h1>
         <section>
           <ul className="list-group">
-            {rssFeedList.map((item,index) =>
-              <li key={index} className="list-group-item clearfix">
+            {rssFeedList.map((item, i) =>
+              <li key={`item-${i}`} className="list-group-item">
+                <div class="clearfix">
                 <div className="float-left">
                   <a href={`${item.link}`} target="_blank">
                     {item.title}
@@ -63,6 +64,19 @@ const RSSFeedList = () => {
                 <div className="float-right small">
                   {item.pubDate}
                 </div>
+                </div>
+                {item.topics &&
+                  <div className="small">
+                    Topic: 
+                    <ul className="d-inline ml-0 pl-0">
+                      {item.topics.map((topic, j) =>
+                        <li key={`topic-${i}-${j}`} className="d-inline-block ml-2 text-capitalize">
+                            {topic}
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                }
               </li>
             )}
           </ul>

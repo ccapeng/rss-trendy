@@ -3,7 +3,7 @@ import morgan from 'morgan';
 // import path from 'path';
 // import rfs from 'rotating-file-stream';
 // import { fileURLToPath } from 'url';
-import logger from './logger.js';
+import logger from './services/logger.js';
 import routes from './routes/rssfeed.js';
 
 const app = express();

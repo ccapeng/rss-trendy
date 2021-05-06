@@ -1,6 +1,6 @@
-import { initDB } from "./db.js";
+import { initDB } from "./services/db.js";
 import app from "./app.js";
-import { reloadFeedItems } from "./load.js";
+import { reloadFeedItems } from "./services/loadrss.js";
 
 let db = process.env.DB || "rss-feed";
 await initDB(db);

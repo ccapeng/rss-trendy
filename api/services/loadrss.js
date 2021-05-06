@@ -1,7 +1,9 @@
 import fs from 'fs';
+import cron from 'node-cron';
 import Parser from "rss-parser";
 import { db } from "./db.js";
-import cron from 'node-cron';
+import { setTopicModeling } from "./topicModeling.js";
+import { dateTimeFormatter } from "./logger.js";
 
 const parser = new Parser();
 
@@ -45,12 +47,17 @@ const filterData = (feed, url) => {
         if (item.pubDate != null) {
 
             // use isoDate as pubDate
-            if (item.isoDate != null) {
-                item.pubDate = new Date(item.isoDate);
-            } else {
-                item.pubDate = item.pubDate
-                    .replace(/ GMT/,"")
-                    .replace(/ \+0000/,"");
+            try {
+                if (item.isoDate != null) {
+                    item.pubDate = new Date(item.isoDate);
+                } else {
+                    item.pubDate = new Date(item.pubDate
+                        .replace(/ GMT/,"")
+                        .replace(/ \+0000/,"")
+                    );
+                }
+            } catch(e) {
+                console.error(e);
             }
             return item;
         }
@@ -58,8 +65,10 @@ const filterData = (feed, url) => {
     return feed;
 }
 
+// Load RSS feed items. 
+// Use dateTimeFormatter.format() for the consistency and better performance().
 const loadFeedItems = async() => {
-    console.log("Loading items:", Date());
+    console.log("Loading items:", dateTimeFormatter.format(Date.now()));
     const itemCollection = db.collection("rssitem");
     let feedSources = await getFeedSources();
     let feedItems = await getFeedItems(itemCollection);
@@ -74,27 +83,38 @@ const loadFeedItems = async() => {
 
     let insertedCount = 0;
     for (const source of feedSources) {
-        let feed = await parser.parseURL(source.url);
-        feed = filterData(feed, source.url);
+        try {
+            let feed = await parser.parseURL(source.url);
+            feed = filterData(feed, source.url);
 
-        let newItems = [];
-        feed.items.forEach(item => {
-            // check link if not in the existing rss item
-            if (!linkSet.has(item.link)) {
-                newItems.push(item);
-            }
-        });
+            let newItems = [];
+            feed.items.forEach(item => {
+                // check link if not in the existing rss item
+                if (!linkSet.has(item.link)) {
+                    let topics = setTopicModeling(item.title);
+                    if (topics.length > 0) {
+                        item.topics = topics;
+                    }
+                    newItems.push(item);
+                }
+            });
 
-        // batch insert
-        if (newItems.length > 1) {
-            insertedCount += newItems.length;
-            const result = await itemCollection.insertMany(newItems);
-            if (result && result.insertedIds) {
-                console.log(`Inserted items from ${source.url}`);
+            // batch insert
+            if (newItems.length > 1) {
+                insertedCount += newItems.length;
+                const result = await itemCollection.insertMany(newItems);
+                // if (result && result.insertedIds) {
+                //     console.log(`Inserted items from ${source.url}`);
+                // }
             }
+        } catch(e) {
+            console.error("source error:", e);
         }
     }
-    console.log("Inserted items:", insertedCount, Date());
+    console.log(
+        "Inserted items:", insertedCount, 
+        "at:", dateTimeFormatter.format(Date.now())
+    );
 };
 
 // task scheduling
