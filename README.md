@@ -9,7 +9,7 @@ RSS news feed from New York Times, Washington Post, CNN.
 - Run at local host port 5000.
 - REST URL end points
     - http://127.0.0.1:5000/
-    - http://127.0.0.1:5000/api/rssfeeds
+    - http://127.0.0.1:5000/api/rss
 - REST URL access log is under `log` folder.
 - Features :
     - Cron job to load RSS news from New York Times, Washington Post, CNN.
