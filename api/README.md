@@ -15,4 +15,4 @@
     - http://127.0.0.1:5000/
     - http://127.0.0.1:5000/api/rss
 
-- REST URL access log is under `log` folder.
+- REST URL access log is under `logs` folder.
