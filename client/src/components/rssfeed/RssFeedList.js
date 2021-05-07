@@ -33,40 +33,82 @@ const RSSFeedList = () => {
     window.scrollTo(0, 0);
   }
 
-  if (rssStatus === "init") {
+  const listByTopic = () => {
+
     return (
       <div>
         <h1 className="sr-only">RSS</h1>
         <section>
-          <div>...</div>
+          <div className="row">
+            <div className="col-md-10 col-xs-12 mb-5">
+              <ul className="list-group">
+                {rss.listByTopic.map((item, i) =>
+                  <li key={`topic-item-${i}`} className="list-group-item">
+                    <a href={`${item.link}`} target="_blank">
+                      {item.title}
+                    </a>
+                    <div className="clearfix">
+                      {item.topics &&
+                        <div className="float-left">
+                          <ul className="d-inline ml-0 pl-0">
+                            {item.topics.map((topic, j) =>
+                              <li key={`topic2-${i}-${j}`} 
+                                className="d-inline-block mr-2 text-capitalize">
+
+                                <Link to={`/rss?topic=${topic}`}
+                                  className={`badge badge font-weight-light ${topic===rss.topic?"badge-primary":"badge-secondary"}`}
+                                  onClick={() => { changeTopic(`${topic}`) }}
+                                >
+                                  {topic}
+                                </Link>
+
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      }
+                      <div className="small float-right">
+                        {item.pubDate}
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
+            </div>
+            <div className="col-md-2 col-xs-12">
+              <h2 className="h5">Topics</h2>
+              <ul className="list-group d-md-flex d-sm-inline-block">
+                <li className="list-group-item pl-0 border-0 d-sm-inline-block">
+                  <Link to="/" onClick={() => { fetchData() }}
+                    className="badge badge font-weight-light badge-secondary"
+                  >
+                    ALL
+                  </Link>
+                </li>
+                <li key={`topiclist-${rss.topic}`}
+                    className="list-group-item text-capitalize pl-0 border-0 d-sm-inline-block">
+                      <Link to={`/rss?topic=${rss.topic}`} 
+                        className="badge badge font-weight-light badge-primary"
+                        onClick={() => { changeTopic(`${rss.topic}`) }}
+                      >
+                        {rss.topic}
+                      </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
       </div>
     )
+  }
 
-  } else if (rssStatus === "noData") {
-    
+  const listAll = () => {
     return (
       <div>
         <h1 className="sr-only">RSS</h1>
         <section>
-          <div>No Data.</div>
-        </section>
-      </div >
-    )
-
-  } else if (rssStatus === "showData") {
-    
-    return (
-      <div>
-        {rss.topic &&
-          <h1 className="text-capitalize">{rss.topic}</h1>
-        }
-        {!rss.topic &&
-          <h1>ALL</h1>
-        }
-        <section>
           <div className="row">
-            <div className="col-md-9 col-xs-12 mb-5">
+            <div className="col-md-10 col-xs-12 mb-5">
               <ul className="list-group">
                 {rss.list.map((item, i) =>
                   <li key={`item-${i}`} className="list-group-item">
@@ -98,12 +140,12 @@ const RSSFeedList = () => {
                 )}
               </ul>
             </div>
-            <div className="col-md-3 col-xs-12">
+            <div className="col-md-2 col-xs-12">
               <h2 className="h5">Topics</h2>
               <ul className="list-group d-md-flex d-sm-inline-block">
                 <li className="list-group-item pl-0 border-0 d-sm-inline-block">
                   <Link to="/" onClick={() => { fetchData() }}
-                    className={`badge badge font-weight-light ${rss.topic ? "badge-secondary":"badge-primary"}`}
+                    className="badge badge font-weight-light badge-primary"
                   >
                     ALL
                   </Link>
@@ -112,7 +154,7 @@ const RSSFeedList = () => {
                   <li key={`topiclist-${i}`} 
                     className="list-group-item text-capitalize pl-0 border-0 d-sm-inline-block">
                       <Link to={`/rss?topic=${topic}`} 
-                        className={`badge badge font-weight-light ${rss.topic === topic ? "badge-primary":"badge-secondary"}`}
+                        className="badge badge font-weight-light badge-secondary"
                         onClick={() => { changeTopic(`${topic}`) }}
                       >
                         {topic}
@@ -125,6 +167,38 @@ const RSSFeedList = () => {
         </section>
       </div>
     )
+
+  }
+
+  if (rssStatus === "init") {
+    return (
+      <div>
+        <h1 className="sr-only">RSS</h1>
+        <section>
+          <div>...</div>
+        </section>
+      </div>
+    )
+
+  } else if (rssStatus === "noData") {
+    
+    return (
+      <div>
+        <h1 className="sr-only">RSS</h1>
+        <section>
+          <div>No Data.</div>
+        </section>
+      </div >
+    )
+
+  } else if (rssStatus === "showData") {
+    
+    if (rss.topic) {
+      return listByTopic();
+    } else {
+      return listAll();
+    }
+
   }
 };
 

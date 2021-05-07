@@ -1,33 +1,40 @@
 import lda from 'lda';
 
-//set topic modeling
-const setTopicModeling = (title, content) => {
+// set topic modeling
+// still looking a way to improve.
+const setTopicModeling = (title, content, categories) => {
+
+    const getTopics = (sentence, probability) => {
+        let topics = [];
+        let doc = sentence.match(/[^\.!\?]+[\.!\?]+/g);
+        let results = lda(doc, 2, 5);
+        for (let items of results) {
+            for (let item of items) {
+                if (item.probability > probability) {
+                    topics.push(item.term);
+                }
+            }
+        }
+        return topics;
+    }
 
     let topics = [];
     let termSet = new Set()
 
-    // title topic modeling,, only take probability higher than 0.3
-    let titleDoc = title.match(/[^\.!\?]+[\.!\?]+/g);
-    let titleResults = lda(titleDoc, 2, 5);
-    for (let items of titleResults) {
-        for (let item of items) {
-            if (item.probability > 0.3) {
-                termSet.add(item.term);
-            }
-        }
+    let titleTopics = getTopics(title, 0.3);
+    titleTopics.forEach(topic=>termSet.add(topic));
+
+    // content topic modeling, only take probability higher than 0.2
+    if (content) {
+        let contentTopics = getTopics(content, 0.3);
+        contentTopics.forEach(topic=>termSet.add(topic));
     }
 
-    // content top modeling, only take probability higher than 0.2
-    if (content) {
-        let contentDoc = content.match(/[^\.!\?]+[\.!\?]+/g);
-        let contentResults = lda(contentDoc, 2, 5);
-        for (let items of contentResults) {
-            for (let item of items) {
-                if (item.probability > 0.2) {
-                    termSet.add(item.term);
-                }
-            }
-        }
+    // categories topic modeling, only take probability higher than 0.3
+    // since from news source, should have higher accuracy
+    if (categories) {
+        let categoryTopics = getTopics(categories.join(" "), 0.3);
+        categoryTopics.forEach(topic=>termSet.add(topic));
     }
 
     if (termSet.size > 0) {

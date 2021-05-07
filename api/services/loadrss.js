@@ -28,13 +28,29 @@ const getFeedItems = async(itemCollection) => {
 }
 
 const filterData = (feed, url) => {
+    const parseCategories = (list) => {
+        let newList = [];
+        list.forEach( item => {
+            if (item._) {
+                newList.push(item._);
+            }
+        });
+        // if (newList.length > 0) {
+        //     console.log("newList:", newList)
+        // }
+        return newList;
+    }
 
     //special cases in nytimes
     if (url.indexOf("nytimes.com") > -1) {
         let index = feed.items.length - 1;
         while (index >= 0){
             const item = feed.items[index];
-            delete item.categories;
+            //console.log(item);
+            //delete item.categories;
+            if (item.categories) {
+                item.categories = parseCategories(item.categories);
+            }
             if (
                 item.link.indexOf("/crosswords") > -1 ||
                 item.link.indexOf("/puzzles/") > -1
@@ -47,10 +63,8 @@ const filterData = (feed, url) => {
     }
     feed.items = feed.items.filter(item => {
         if (item.pubDate != null) {
-
-            // use isoDate as pubDate
             try {
-                if (item.isoDate != null) {
+                if (item.isoDate != null) { // use isoDate as pubDate
                     item.pubDate = new Date(item.isoDate);
                 } else {
                     item.pubDate = new Date(item.pubDate
@@ -94,13 +108,16 @@ const loadFeedItems = async() => {
                 // check link if not in the existing rss item
                 if (!linkSet.has(item.link)) {
                     let title = item.title;
-                    let content;
+                    let content, categories;
                     if (item.contentSinppet) {
                         content = item.contentSinppet;
                     } else if (item.content) {
                         content = item.content.replace(/<\/?[^>]+(>|$)/g, "");
                     }
-                    let topics = setTopicModeling(title, content);
+                    if (item.categories) {
+                        categories = item.categories;
+                    }
+                    let topics = setTopicModeling(title, content, categories);
                     if (topics.length > 0) {
                         item.topics = topics;
                     }
