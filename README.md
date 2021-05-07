@@ -11,6 +11,15 @@ RSS news feed from New York Times, Washington Post, CNN.
     - http://127.0.0.1:5000/
     - http://127.0.0.1:5000/api/rssfeeds
 - REST URL access log is under `log` folder.
+- Features :
+    - Cron job to load RSS news from New York Times, Washington Post, CNN.
+    - Data filtering.
+    - Save data into MongoDB.
+    - Output REST API data.
+    - Save access log and rotate daily.
+    - Machine learning: topic modeling. The current model still need to improve.
+    - Elastic search (coming).
+
 
 ## Frontend  
 - It's React.
@@ -29,7 +38,5 @@ RSS news feed from New York Times, Washington Post, CNN.
 
 ## Enhancements
 Some other features are coming soon.
-- Log System.
 - Elastic Search.
 - Web server.
-- Topic modeling (machine learning).
