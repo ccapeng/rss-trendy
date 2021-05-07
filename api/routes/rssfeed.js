@@ -6,6 +6,6 @@ const router = express.Router();
 router.get('/', getRssFeeds);
 
 // read all
-router.get('/api/rssfeeds', getRssFeeds);
+router.get('/api/rss', getRssFeeds);
 
 export default router;

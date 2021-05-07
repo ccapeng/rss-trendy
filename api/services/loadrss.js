@@ -31,17 +31,19 @@ const filterData = (feed, url) => {
 
     //special cases in nytimes
     if (url.indexOf("nytimes.com") > -1) {
-        feed.items.forEach((item, index, object) => {
-            // remove bad data
+        let index = feed.items.length - 1;
+        while (index >= 0){
+            const item = feed.items[index];
             delete item.categories;
-            // items excluded
             if (
                 item.link.indexOf("/crosswords") > -1 ||
                 item.link.indexOf("/puzzles/") > -1
             ) {
-                object.splice(index, 1);
+                feed.items.splice(index, 1);
             }
-        });
+            index -= 1;
+        }
+
     }
     feed.items = feed.items.filter(item => {
         if (item.pubDate != null) {
@@ -91,7 +93,14 @@ const loadFeedItems = async() => {
             feed.items.forEach(item => {
                 // check link if not in the existing rss item
                 if (!linkSet.has(item.link)) {
-                    let topics = setTopicModeling(item.title);
+                    let title = item.title;
+                    let content;
+                    if (item.contentSinppet) {
+                        content = item.contentSinppet;
+                    } else if (item.content) {
+                        content = item.content.replace(/<\/?[^>]+(>|$)/g, "");
+                    }
+                    let topics = setTopicModeling(title, content);
                     if (topics.length > 0) {
                         item.topics = topics;
                     }

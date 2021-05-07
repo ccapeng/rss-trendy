@@ -24,7 +24,7 @@ const App = () => {
           <ErrorBoundary Fallbackcomponent={ErrorFallback}>
             <Switch>
               <Route exact path="/" component={RssFeedList} />
-              <Route exact path="/rss" component={RssFeedList} />
+              <Route path="/rss" component={RssFeedList} />
               <Route component={NotFound} />
             </Switch>
           </ErrorBoundary>

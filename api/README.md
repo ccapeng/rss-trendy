@@ -6,7 +6,7 @@
     - Save data into MongoDB.
     - Output REST API data.
     - Save access log and rotate daily.
-    - Machine learning: topic modeling (coming).
+    - Machine learning: topic modeling. The current model still need to improve.
     - Elastic search (coming).
 
 - To start `npm run dev`

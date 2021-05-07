@@ -2,22 +2,49 @@ import { db } from "../services/db.js";
 import { dateTimeFormatter } from "../services/logger.js";
 
 const getRssFeeds = async (req, res) => {
+    console.log("getRssFeeds", req.params);
     const itemCollection = db.collection("rssitem");
     let feedItems = await itemCollection.find().sort({pubDate:-1}).toArray();
-    //pubDate: new Date(item.pubDate).toLocaleString("en-US", {timeZone:"EST"})
-    let outputItems = feedItems.map(item =>{
+    let topicSet = new Set();
+    let topic = req.query.topic;
+    console.log("query:", topic);
+
+    let outputItems = [];
+    feedItems.forEach(item =>{
+        let pubDate = dateTimeFormatter.format(item.pubDate);
         let obj = {
             title: item.title,
             link: item.link,
-            pubDate: dateTimeFormatter.format(item.pubDate)
+            pubDate: pubDate
         };
         if (item.topics) {
+            item.topics.forEach(topic=>topicSet.add(topic));
             obj.topics = item.topics;
         }
-        return obj;
+        console.log(obj);
+        if (topic) { // if topic specified
+            if (obj.topics && obj.topics.includes(topic)) {
+                outputItems.push(obj); 
+            }
+        } else {
+            outputItems.push(obj);
+        }
     });
-    console.log("Get Feeds", outputItems.length);
-    res.json(outputItems);
+    let output = {
+        "list": outputItems
+    }
+
+    // current topic
+    if (topic) {
+        output.topic = topic;
+    }
+
+    // all topics
+    if (topicSet.size>0){
+        output.topicList = Array.from(topicSet).sort();
+    }
+
+    res.json(output);
 };
 
 export {
