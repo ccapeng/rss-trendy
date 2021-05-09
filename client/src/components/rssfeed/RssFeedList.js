@@ -108,7 +108,7 @@ const RSSFeedList = () => {
         <h1 className="sr-only">RSS</h1>
         <section>
           <div className="row">
-            <div className="col-md-10 col-xs-12 mb-5">
+            <div className="col-md-9 col-xs-12 mb-5">
               <ul className="list-group">
                 {rss.list.map((item, i) =>
                   <li key={`item-${i}`} className="list-group-item">
@@ -140,10 +140,10 @@ const RSSFeedList = () => {
                 )}
               </ul>
             </div>
-            <div className="col-md-2 col-xs-12">
+            <div className="col-md-3 col-xs-12">
               <h2 className="h5">Topics</h2>
-              <ul className="list-group d-md-flex d-sm-inline-block">
-                <li className="list-group-item pl-0 border-0 d-sm-inline-block">
+              <ul className="list-group d-inline-block">
+                <li className="list-group-item pl-0 border-0 d-inline-block">
                   <Link to="/" onClick={() => { fetchData() }}
                     className="badge badge font-weight-light badge-primary"
                   >
@@ -152,7 +152,7 @@ const RSSFeedList = () => {
                 </li>
                 {rss.topicList.map((topic, i) =>
                   <li key={`topiclist-${i}`} 
-                    className="list-group-item text-capitalize pl-0 border-0 d-sm-inline-block">
+                    className="list-group-item text-capitalize pl-0 border-0 d-inline-block">
                       <Link to={`/rss?topic=${topic}`} 
                         className="badge badge font-weight-light badge-secondary"
                         onClick={() => { changeTopic(`${topic}`) }}

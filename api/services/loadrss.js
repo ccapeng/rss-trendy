@@ -4,6 +4,7 @@ import Parser from "rss-parser";
 import { db } from "./db.js";
 import { setTopicModeling } from "./topicModeling.js";
 import { dateTimeFormatter } from "./logger.js";
+import { pingElastic, indexSearch } from '../search/elastic.js';
 
 const parser = new Parser();
 
@@ -35,9 +36,6 @@ const filterData = (feed, url) => {
                 newList.push(item._);
             }
         });
-        // if (newList.length > 0) {
-        //     console.log("newList:", newList)
-        // }
         return newList;
     }
 
@@ -46,8 +44,6 @@ const filterData = (feed, url) => {
         let index = feed.items.length - 1;
         while (index >= 0){
             const item = feed.items[index];
-            //console.log(item);
-            //delete item.categories;
             if (item.categories) {
                 item.categories = parseCategories(item.categories);
             }
@@ -84,6 +80,8 @@ const filterData = (feed, url) => {
 // Load RSS feed items. 
 // Use dateTimeFormatter.format() for the consistency and better performance().
 const loadFeedItems = async() => {
+
+    let isElasticRunning = await pingElastic();
     console.log("Loading items:", dateTimeFormatter.format(Date.now()));
     const itemCollection = db.collection("rssitem");
     let feedSources = await getFeedSources();
@@ -113,6 +111,8 @@ const loadFeedItems = async() => {
                         content = item.contentSinppet;
                     } else if (item.content) {
                         content = item.content.replace(/<\/?[^>]+(>|$)/g, "");
+                    } else if (item.description) {
+                        content = item.description.replace(/<\/?[^>]+(>|$)/g, "");
                     }
                     if (item.categories) {
                         categories = item.categories;
@@ -123,6 +123,7 @@ const loadFeedItems = async() => {
                     }
                     newItems.push(item);
                 }
+
             });
 
             // batch insert
@@ -132,9 +133,13 @@ const loadFeedItems = async() => {
                 // if (result && result.insertedIds) {
                 //     console.log(`Inserted items from ${source.url}`);
                 // }
+                if (isElasticRunning) {
+                    indexSearch(newItems);
+                }
             }
         } catch(e) {
-            console.error("source error:", e);
+            console.error("source error:", source.url);
+            console.error(e);
         }
     }
     console.log(

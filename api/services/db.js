@@ -5,13 +5,11 @@ let mongoDBServer =  process.env.mongoDBServer || "localhost";
 //const mongoUrl = 'mongodb://localhost:27017/';
 //const mongoUrl = 'mongodb://mongodb:27017/';
 const mongoUrl = `mongodb://${mongoDBServer}:27017/`;
-console.log("mongoUrl:", mongoUrl);
-
-var client, db;
+let client, db;
 
 const initDB = async(dbName) => {
-    console.log("init DB:", dbName);
     try{
+        console.log("db url:", mongoUrl);
         client = await MongoClient.connect(
             mongoUrl, 
             {
@@ -19,16 +17,13 @@ const initDB = async(dbName) => {
                 useUnifiedTopology: true
             }
         );
-        //db = client.db('rss-feed');
         db = client.db(dbName);
-    }
-    catch(err) {
-        console.error(err); 
+        console.log("db connected:", dbName);
+    } catch(e) {
+        console.error("database initialized error:", e); 
         client.close();
     }
 }
-
-//await initDB();
 
 export {
     client,
