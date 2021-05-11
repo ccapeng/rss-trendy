@@ -21,7 +21,7 @@ const pingElastic = async() => {
 }
 
 // insert data in bulk
-const indexSearch = async(items) => {
+const indexSearch = async(url, items) => {
 
     try {
         let body = items.flatMap(
@@ -31,7 +31,7 @@ const indexSearch = async(items) => {
             refresh: true,
             body
         });
-        console.log('data indexed:', results.body.items.length);
+        console.log('data indexed:', results.body.items.length, url);
     } catch (e) {
         console.err("indexSearch error:", e);
     }

@@ -134,7 +134,7 @@ const loadFeedItems = async() => {
                 //     console.log(`Inserted items from ${source.url}`);
                 // }
                 if (isElasticRunning) {
-                    indexSearch(newItems);
+                    indexSearch(source.url, newItems);
                 }
             }
         } catch(e) {

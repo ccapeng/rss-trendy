@@ -1,42 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom";
-//import { NavLink } from 'react-router-dom';
 import RssFeedService from '../../services/rssfeed';
+import './rssfeed.css';
+import { useAtom } from "jotai";
+import { rssAtom, rssSearchAtom } from "../../store/rssfeed";
 
 const RSSFeedList = () => {
-  const [rssStatus, setRssStatus ] = useState("init");
-  const [rss, setRss ] = useState([]);
+  const [rss, setRss] = useAtom(rssAtom);
+  const [rssSearch, setRssSearch] = useAtom(rssSearchAtom);
 
-  const fetchData = async (topic) => {
+  const fetchData = async (dataObj) => {
     try {
-      let data = await RssFeedService.list(topic);
-      console.log("data:", data);
-      if (data.length == 0) {
-        setRssStatus("noData");
-      } else {
-        setRss(data);
-        setRssStatus("showData");
-      }
-      
-    } catch (error) {
-      console.log(error);
+      setRss({...rss, status:"loading"});
+      let data = await RssFeedService.list(dataObj);
+      data.status = "loaded";
+      setRss(data);
+    } catch (err) {
+      console.log("err", err);
     }
   };
   
   useEffect(() => {
-    fetchData();
+    console.log("init page");
+    let dataObj = {}
+    fetchData(dataObj);
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    console.log("useEffect rssSearch:", rssSearch);
+    if (rssSearch.search!=="") {
+      fetchData({search:rssSearch.search});
+    }
+    // eslint-disable-next-line
+  }, [rssSearch]);
+
   const changeTopic = (topic) => {
-    fetchData(topic);
+    fetchData({topic});
     window.scrollTo(0, 0);
+    setRssSearch({search:""})
   }
 
   const listByTopic = () => {
 
     return (
       <div>
+        {console.log("listByTopic rendered")}
         <h1 className="sr-only">RSS</h1>
         <section>
           <div className="row">
@@ -50,7 +59,7 @@ const RSSFeedList = () => {
                     <div className="clearfix">
                       {item.topics &&
                         <div className="float-left">
-                          <ul className="d-inline ml-0 pl-0">
+                          <ul className="d-block pl-0 topic">
                             {item.topics.map((topic, j) =>
                               <li key={`topic2-${i}-${j}`} 
                                 className="d-inline-block mr-2 text-capitalize">
@@ -86,7 +95,7 @@ const RSSFeedList = () => {
                   </Link>
                 </li>
                 <li key={`topiclist-${rss.topic}`}
-                    className="list-group-item text-capitalize pl-0 border-0 d-sm-inline-block">
+                    className="list-group-item text-capitalize pl-0 border-0 d-block">
                       <Link to={`/rss?topic=${rss.topic}`} 
                         className="badge badge font-weight-light badge-primary"
                         onClick={() => { changeTopic(`${rss.topic}`) }}
@@ -102,9 +111,67 @@ const RSSFeedList = () => {
     )
   }
 
+  const listBySearch = () => {
+    let itemCount = rss.listBySearch.length;
+
+    if (itemCount === 0) {
+      return (
+        <div>
+          {console.log("empty listBySearch rendered")}
+          <h1 className="sr-only">Search Result</h1>
+          <section>
+            <div>Search is coming.</div>
+          </section>
+        </div>        
+      )
+    } 
+    return (
+      <div>
+        {console.log("listBySearch rendered")}
+        <h1 className="sr-only">Search Result</h1>
+        <section>
+          <ul className="list-group">
+            {rss.listBySearch.map((item, i) =>
+              <li key={`search-item-${i}`} className="list-group-item">
+                <a href={`${item.link}`} target="_blank">
+                  {item.title}
+                </a>
+                <div className="clearfix">
+                  {item.topics &&
+                    <div className="float-left">
+                      <ul className="d-block pl-0 topic">
+                        {item.topics.map((topic, j) =>
+                          <li key={`topic2-${i}-${j}`} 
+                            className="d-inline-block mr-2 text-capitalize">
+
+                            <Link to={`/rss?topic=${topic}`}
+                              className={`badge badge font-weight-light ${topic===rss.topic?"badge-primary":"badge-secondary"}`}
+                              onClick={() => { changeTopic(`${topic}`) }}
+                            >
+                              {topic}
+                            </Link>
+
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  }
+                  <div className="small float-right">
+                    {item.pubDate}
+                  </div>
+                </div>
+              </li>
+            )}
+          </ul>
+        </section>
+      </div>
+    )
+  }
+
   const listAll = () => {
     return (
       <div>
+        {console.log("listAll rendered")}
         <h1 className="sr-only">RSS</h1>
         <section>
           <div className="row">
@@ -118,9 +185,9 @@ const RSSFeedList = () => {
                     <div className="clearfix">
                       {item.topics &&
                         <div className="float-left">
-                          <ul className="d-inline ml-0 pl-0">
+                          <ul className="d-block pl-0 text-capitalize topic">
                             {item.topics.map((topic, j) =>
-                              <li key={`topic-${i}-${j}`} className="d-inline-block mr-2 text-capitalize">
+                              <li key={`topic-${i}-${j}`} className="d-inline-block">
                                   <Link to={`/rss?topic=${topic}`}
                                     className="badge badge badge-secondary font-weight-light" 
                                     onClick={() => { changeTopic(`${topic}`) }}
@@ -142,8 +209,8 @@ const RSSFeedList = () => {
             </div>
             <div className="col-md-3 col-xs-12">
               <h2 className="h5">Topics</h2>
-              <ul className="list-group d-inline-block">
-                <li className="list-group-item pl-0 border-0 d-inline-block">
+              <ul className="list-group d-block text-justify text-capitalize topic">
+                <li className="list-group-item pl-0 pr-0 border-0 d-inline-block">
                   <Link to="/" onClick={() => { fetchData() }}
                     className="badge badge font-weight-light badge-primary"
                   >
@@ -152,7 +219,7 @@ const RSSFeedList = () => {
                 </li>
                 {rss.topicList.map((topic, i) =>
                   <li key={`topiclist-${i}`} 
-                    className="list-group-item text-capitalize pl-0 border-0 d-inline-block">
+                    className="list-group-item pl-0 pr-0 border-0 d-inline-block">
                       <Link to={`/rss?topic=${topic}`} 
                         className="badge badge font-weight-light badge-secondary"
                         onClick={() => { changeTopic(`${topic}`) }}
@@ -170,7 +237,7 @@ const RSSFeedList = () => {
 
   }
 
-  if (rssStatus === "init") {
+  if (rss.status === "init" || rss.status === "loading") {
     return (
       <div>
         <h1 className="sr-only">RSS</h1>
@@ -180,7 +247,7 @@ const RSSFeedList = () => {
       </div>
     )
 
-  } else if (rssStatus === "noData") {
+  } else if (rss.status === "noData") {
     
     return (
       <div>
@@ -191,15 +258,17 @@ const RSSFeedList = () => {
       </div >
     )
 
-  } else if (rssStatus === "showData") {
-    
+  } else if (rss.status === "loaded") {
+    console.log("loaded topic:", rss.topic);
     if (rss.topic) {
       return listByTopic();
+    } else if (rss.search) {
+        return listBySearch();
     } else {
       return listAll();
     }
-
   }
+
 };
 
 export default RSSFeedList;

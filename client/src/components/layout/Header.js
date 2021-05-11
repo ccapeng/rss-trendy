@@ -1,8 +1,20 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, {useRef} from 'react';
+//import React from 'react';
 import { withRouter } from 'react-router';
+import { useAtom } from "jotai";
+import { rssSearchAtom } from "../../store/rssfeed";
 
-const Header = () => {
+const Header = ({history}) => {
+
+  const [rssSearch, setRssSearch] = useAtom(rssSearchAtom);
+  const searchRef = useRef();
+  const handleSearch = () => {
+    let searchValue = searchRef.current.value;
+    console.log("searchValue:", searchValue);
+    setRssSearch({search: searchValue});
+    let link = `/rss?search=${searchValue}`;
+    history.push(link);
+  }
 
   return (
     <nav className="navbar navbar-expand-sm navbar-light bg-light">
@@ -23,18 +35,25 @@ const Header = () => {
             RSS
           </a>
         </div>
-        <ul className="navbar-nav ml-auto mt-2 mt-lg-0 sr-only">
-          <li className="nav-item">
-            <NavLink to="/rss"
-              className="nav-link"
-              activeClassName="active">
-              RSS
-            </NavLink>
-          </li>
-        </ul>
+        <form onSubmit={(event)=>event.preventDefault()} className="form-inline">
+          <input 
+            className="form-control" 
+            type="text" 
+            placeholder="Search"
+            defaultValue={rssSearch.search}
+            ref={searchRef}
+          />
+          <button 
+            className="btn btn-secondary" 
+            type="submit" 
+            onClick={()=>{handleSearch()}}>
+            Search
+          </button>
+        </form>
       </div>
     </nav>
   );
+
 }
 
 export default withRouter(Header);

@@ -1,50 +1,77 @@
 import { db } from "../services/db.js";
 import { dateTimeFormatter } from "../services/logger.js";
 
-const getRssFeeds = async (req, res) => {
+const getOutputObj = (item) => {
+    let obj = {
+        title: item.title,
+        link: item.link,
+        pubDate: dateTimeFormatter.format(item.pubDate)
+    };
+    return obj;
+}
+
+const getAll = async(req, res) => {
     const itemCollection = db.collection("rssitem");
     let feedItems = await itemCollection.find().sort({pubDate:-1}).toArray();
     let topicSet = new Set();
-    let topic = req.query.topic;
 
     let outputItems = [];
     feedItems.forEach(item =>{
-        let pubDate = dateTimeFormatter.format(item.pubDate);
-        let obj = {
-            title: item.title,
-            link: item.link,
-            pubDate: pubDate
-        };
+        let obj = getOutputObj(item);
         if (item.topics) {
             item.topics.forEach(topic=>topicSet.add(topic));
             obj.topics = item.topics;
         }
+        outputItems.push(obj);
+    });
 
-        if (topic) { // if topic specified
-            if (obj.topics && obj.topics.includes(topic)) {
-                outputItems.push(obj); 
-            }
-        } else {
-            outputItems.push(obj);
+    res.json({
+        list: outputItems,
+        topicList: Array.from(topicSet).sort()
+    });
+}
+
+const getTopicList = async(req, res, topic) => {
+
+    const itemCollection = db.collection("rssitem");
+    let feedItems = await itemCollection.find().sort({pubDate:-1}).toArray();
+
+    let outputItems = [];
+    feedItems.forEach(item =>{
+        if (item.topics && item.topics.includes(topic)) {
+            let obj = getOutputObj(item);
+            obj.topics = item.topics;
+            outputItems.push(obj); 
         }
     });
 
-    let output;
-    if (topic) {
-        output = {
-            "listByTopic": outputItems
-        }
-        output.topic = topic;
+    res.json({
+        listByTopic: outputItems,
+        topic: topic
+    });
+
+}
+
+const getSearchList = async(req, res, search) => {
+    let outputItems = [];
+    res.json({
+        listBySearch: outputItems,
+        search
+    });
+}
+
+const getRssFeeds = async (req, res) => {
+    let topic = req.query.topic;
+    let search = req.query.search;
+    console.log("query", topic, search);
+    if (typeof(search) !=="undefined") {
+        return getSearchList(req, res, search);
+    } else if (typeof(topic) !=="undefined") {
+        return getTopicList(req, res, topic);
     } else {
-        output = {
-            "list": outputItems
-        }
-        // list all topics
-        if (topicSet.size>0){
-            output.topicList = Array.from(topicSet).sort();
-        }
+        return getAll(req, res);
     }
-    res.json(output);
+
 };
 
 export {

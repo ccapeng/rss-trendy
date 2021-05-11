@@ -37,8 +37,16 @@ const setTopicModeling = (title, content, categories) => {
         for (let i = 0; i < results.length; i++) {
             let result = results[i];
             if (result.length > 0) {
-                for (let j = 0; j < 1; j++) {
-                    topics.push(result[0].term);
+                for (let j = 0; j < result.length; j++) {
+                    if (j == 0) {
+                        topics.push(result[0].term);
+                    } else {
+                        if (result[j].probability > 0.1) {
+                            topics.push(result[j].term);
+                        } else {
+                            break;
+                        }
+                    }
                 }
             }
         }

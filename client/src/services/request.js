@@ -10,7 +10,6 @@ const getHeaderConfig = () => {
 
 export const getFullURL = (url) => {
   let host = process.env.REACT_APP_HOST;
-  console.log("host", host);
   return host + "/" + url;
 }
 
@@ -18,7 +17,6 @@ export const getFullURL = (url) => {
 const Request = {
 
   get: async (url) => {
-
     try {
       let result = await axios.get(
         getFullURL(url),
