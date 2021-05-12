@@ -1,9 +1,14 @@
 version: "3.8"
 services:
+  #mongodb:
+  #  image: mongodb
+  #  build:
+  #    context: ./mongodb
+  #  ports:
+  #    - "27017:27017"
   mongodb:
-    image: mongodb
-    build:
-      context: ./mongodb
+    image: mongo
+    restart: always
     ports:
       - "27017:27017"
   api:
