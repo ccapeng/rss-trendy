@@ -9,4 +9,4 @@ await reloadFeedItems();
 let port = process.env.PORT || 5000;
 export const server = app.listen(port, () => {
   console.log(`Server start: ${server.address().port}`);
-});  
+});

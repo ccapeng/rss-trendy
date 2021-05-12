@@ -4,7 +4,7 @@ import Parser from "rss-parser";
 import { db } from "./db.js";
 import { setTopicModeling } from "./topicModeling.js";
 import { dateTimeFormatter } from "./logger.js";
-import { pingElastic, indexSearch } from '../search/elastic.js';
+import { pingElastic, indexSearch } from './search.js';
 
 const parser = new Parser();
 
@@ -82,7 +82,7 @@ const filterData = (feed, url) => {
 const loadFeedItems = async() => {
 
     let isElasticRunning = await pingElastic();
-    console.log("Loading items:", dateTimeFormatter.format(Date.now()));
+    console.log("db loading items:", dateTimeFormatter.format(Date.now()));
     const itemCollection = db.collection("rssitem");
     let feedSources = await getFeedSources();
     let feedItems = await getFeedItems(itemCollection);
@@ -93,7 +93,7 @@ const loadFeedItems = async() => {
     for (const item of feedItems) {
         linkSet.add(item.link);
     }
-    console.log("Current items:", linkSet.size);
+    console.log("db current items:", linkSet.size);
 
     let insertedCount = 0;
     for (const source of feedSources) {
@@ -143,7 +143,7 @@ const loadFeedItems = async() => {
         }
     }
     console.log(
-        "Inserted items:", insertedCount, 
+        "db inserted items:", insertedCount, 
         "at:", dateTimeFormatter.format(Date.now())
     );
 };
@@ -162,7 +162,7 @@ const reloadFeedItems = async() => {
     } while (i < 60);
     let minuteListStr = minuteList.join(",");
     let schedulePattern = `${minuteListStr} * * * *`;
-    console.log("Schedule Pattern:", schedulePattern);
+    console.log("cron job schedule pattern:", schedulePattern);
     cron.schedule(schedulePattern, () => {
         loadFeedItems();
     });

@@ -25,8 +25,15 @@ const initDB = async(dbName) => {
     }
 }
 
+const getItems = async() => {
+    const itemCollection = db.collection("rssitem");
+    let items = await itemCollection.find().sort({pubDate:-1}).toArray();
+    return items;
+}
+
 export {
     client,
     db,
-    initDB
+    initDB,
+    getItems
 }

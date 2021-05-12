@@ -41,7 +41,7 @@ const setTopicModeling = (title, content, categories) => {
                     if (j == 0) {
                         topics.push(result[0].term);
                     } else {
-                        if (result[j].probability > 0.1) {
+                        if (result[j].probability > 0.15) {
                             topics.push(result[j].term);
                         } else {
                             break;
@@ -53,27 +53,34 @@ const setTopicModeling = (title, content, categories) => {
         return topics;
     }
 
-    const getArrayTopics = (arr, probability) => {
-        let results = lda(arr, 2, 5);
-        return getTopicsFromResults(results, probability);
-    }
+    // const getArrayTopics = (arr, probability) => {
+    //     let results = lda(arr, 2, 5);
+    //     return getTopicsFromResults(results, probability);
+    // }
 
     let topics = [];
     let termSet = new Set()
-    let titleTopics = getTitleTopics(title, 0.3);
-    titleTopics.forEach(topic=>termSet.add(topic));
 
-    // content topic modeling, only take probability higher than 0.2
-    if (content) {
-        let contentTopics = getContentTopics(content);
-        contentTopics.forEach(topic=>termSet.add(topic));
-    }
-
-    // categories topic modeling, only take probability higher than 0.3
     // since from news source, should have higher accuracy
     if (categories) {
-        let categoryTopics = getArrayTopics(categories, 0.3);
-        categoryTopics.forEach(topic=>termSet.add(topic));
+        // let categoryTopics = getArrayTopics(categories, 0.3);
+        // categoryTopics.forEach(topic=>termSet.add(topic));
+        // add special rule to avoid long category name
+        categories.forEach(category=>{
+            category = category.replace(/\(|\)/g,"").trim();
+            if (category.split(" ").length < 3) {
+                termSet.add(category)
+            }
+        });
+    } else {
+        let titleTopics = getTitleTopics(title, 0.3);
+        titleTopics.forEach(topic=>termSet.add(topic));
+
+        // content topic modeling, only take probability higher than 0.2
+        if (content) {
+            let contentTopics = getContentTopics(content);
+            contentTopics.forEach(topic=>termSet.add(topic));
+        }
     }
 
     if (termSet.size > 0) {
