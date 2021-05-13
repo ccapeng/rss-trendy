@@ -22,13 +22,16 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-        discovery.type: single-node
+      discovery.type: single-node
             
   api:
     image: rss_trendy_api
     build:
-        context: ./api
-        dockerfile: Dockerfile.dev
+      context: ./api
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - elasticsearch
+      - mongodb
     volumes:
       - /app/node_modules
       - ./api:/app
