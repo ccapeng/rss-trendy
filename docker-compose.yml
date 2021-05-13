@@ -11,6 +11,18 @@ services:
     restart: always
     ports:
       - "27017:27017"
+      
+  elasticsearch:
+    image: elasticsearch:7.8.1
+    # container_name: rss-elasticsearch
+    # networks:
+    #  - rss-network
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+        discovery.type: single-node
+            
   api:
     image: rss_trendy_api
     build:
@@ -37,3 +49,7 @@ services:
       - ./client:/app
     ports:
       - "3000:3000"
+      
+# The network where all the containers will live
+# networks:
+    # rss-network:
