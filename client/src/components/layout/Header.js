@@ -1,11 +1,11 @@
-import React, {useRef} from 'react';
-//import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { withRouter } from 'react-router';
 import { useAtom } from "jotai";
 import { rssSearchAtom } from "../../store/rssfeed";
 
 const Header = ({history}) => {
 
+  const [searchInputKey, setSerachInputKey] = useState(new Date().toString());
   const [rssSearch, setRssSearch] = useAtom(rssSearchAtom);
   const searchRef = useRef();
   const handleSearch = () => {
@@ -15,6 +15,12 @@ const Header = ({history}) => {
     let link = `/rss?search=${searchValue}`;
     history.push(link);
   }
+
+  // force to clean up search input
+  useEffect(() => {
+    setSerachInputKey(new Date().toString());
+    // eslint-disable-next-line
+  }, [rssSearch]);
 
   return (
     <nav className="navbar navbar-expand-sm navbar-light bg-light">
@@ -38,6 +44,7 @@ const Header = ({history}) => {
         <form onSubmit={(event)=>event.preventDefault()} className="form-inline">
           <input 
             className="form-control" 
+            key={searchInputKey}
             type="text" 
             placeholder="Search"
             defaultValue={rssSearch.search}

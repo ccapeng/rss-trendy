@@ -35,8 +35,12 @@ RSS news feed from New York Times, Washington Post, CNN.
     - Backend nodejs run at port 5000.
     - Frontend react run at port 3000.
     - To check it, open browaser [http://127.0.0.1:3000](http://127.0.0.1:3000)
+    - If one of services can't start up, please run `docker-compose restart.`  
+      Both mongoDB and elastic search images take a while to download.  
+      That is the main reason to start up completely.
+      So, you can set `export COMPOSE_HTTP_TIMEOUT=240`  
+      Or, put a higher number.
 
 ## Enhancements
 Some other features are coming soon.
-- Elastic Search.
 - Web server.

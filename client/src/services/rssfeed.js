@@ -14,7 +14,6 @@ const RssFeedService = {
     } else {
       url = "api/rss";
     }
-    console.log("url", url);
     return Request.get(url);
   },
   get: (guid) => {

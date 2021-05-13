@@ -11,24 +11,32 @@ const RSSFeedList = () => {
 
   const fetchData = async (dataObj) => {
     try {
-      setRss({...rss, status:"loading"});
+      let oldSearch;
+      if (rss.search) {
+        oldSearch = rss.search;
+      }
+      //setRss({...rss, status:"loading"});
       let data = await RssFeedService.list(dataObj);
       data.status = "loaded";
       setRss(data);
+      if (
+        typeof(oldSearch) !=="undefined" && 
+        typeof(data.search) ==="undefined"
+      ) {
+        setRssSearch({search:""});
+      }
     } catch (err) {
       console.log("err", err);
     }
   };
   
   useEffect(() => {
-    console.log("init page");
     let dataObj = {}
     fetchData(dataObj);
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    console.log("useEffect rssSearch:", rssSearch);
     if (rssSearch.search!=="") {
       fetchData({search:rssSearch.search});
     }
@@ -38,14 +46,12 @@ const RSSFeedList = () => {
   const changeTopic = (topic) => {
     fetchData({topic});
     window.scrollTo(0, 0);
-    setRssSearch({search:""})
   }
 
   const listByTopic = () => {
 
     return (
       <div>
-        {console.log("listByTopic rendered")}
         <h1 className="sr-only">RSS</h1>
         <section>
           <div className="row">
@@ -117,7 +123,6 @@ const RSSFeedList = () => {
     if (itemCount === 0) {
       return (
         <div>
-          {console.log("empty listBySearch rendered")}
           <h1 className="sr-only">Search Result</h1>
           <section>
             <div>Nothing found.</div>
@@ -127,7 +132,6 @@ const RSSFeedList = () => {
     } 
     return (
       <div>
-        {console.log("listBySearch rendered")}
         <h1 className="sr-only">Search Result</h1>
         <section>
           <ul className="list-group">
@@ -171,7 +175,6 @@ const RSSFeedList = () => {
   const listAll = () => {
     return (
       <div>
-        {console.log("listAll rendered")}
         <h1 className="sr-only">RSS</h1>
         <section>
           <div className="row">
@@ -259,10 +262,9 @@ const RSSFeedList = () => {
     )
 
   } else if (rss.status === "loaded") {
-    console.log("loaded topic:", rss.topic);
-    if (rss.topic) {
+    if (typeof(rss.topic)!=="undefined") {
       return listByTopic();
-    } else if (rss.search) {
+    } else if (typeof(rss.search)!=="undefined") {
         return listBySearch();
     } else {
       return listAll();

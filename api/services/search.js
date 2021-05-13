@@ -1,6 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
 
-// const ES_HOST = process.env.ES_HOST || 'http://localhost:9200';
 const ESServer =  process.env.ESServer || 'localhost';
 const ESUrl = `http://${ESServer}:9200/`;
 const client = new Client({

@@ -22,6 +22,9 @@ const getSearchOutputObj = (item) => {
         link: item.link,
         pubDate: dateTimeFormatter.format(pubDate)
     };
+    if (item.topics) {
+        obj.topics = item.topics;
+    }
     return obj;
 }
 

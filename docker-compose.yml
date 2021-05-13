@@ -6,6 +6,13 @@ services:
   #    context: ./mongodb
   #  ports:
   #    - "27017:27017"
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+      
   mongodb:
     image: mongo
     restart: always
@@ -14,8 +21,6 @@ services:
       
   elasticsearch:
     image: elasticsearch:7.8.1
-    #image: elasticsearch:latest
-    # container_name: rss-elasticsearch
     # networks:
     #  - rss-network
     ports:
