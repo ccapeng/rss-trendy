@@ -39,10 +39,12 @@ services:
     #  - ./api/dev.env
     environment:
       - mongoDBServer=mongoDB
+      - ESServer=elasticsearch
     ports:
       - "5000:5000"
     links:
       - mongodb
+      - elasticsearch
   client:
     image: rss_trendy_client
     build:

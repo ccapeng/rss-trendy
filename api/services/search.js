@@ -1,8 +1,10 @@
 import { Client } from '@elastic/elasticsearch';
 
-const ES_HOST = process.env.ES_HOST || 'http://localhost:9200';
+// const ES_HOST = process.env.ES_HOST || 'http://localhost:9200';
+const ESServer =  process.env.ESServer || 'http://localhost:9200';
+const ESUrl = `http://${ESServer}:9200/`;
 const client = new Client({
-	node: ES_HOST,
+	node: ESUrl,
 	log: 'trace'
 });
 
@@ -12,7 +14,7 @@ const INDEX = "rss";
 const ping = async() => {
     try {
         await client.ping();
-        console.log('elasticsearch ready:', ES_HOST);
+        console.log('elasticsearch ready:', ESUrl);
         let result = await client.indices.exists({index: INDEX});
         if (result && result.statusCode === 200) {
             console.log(`elasticsearch index ${INDEX} exist`);
