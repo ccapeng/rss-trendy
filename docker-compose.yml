@@ -23,7 +23,18 @@ services:
       - "9300:9300"
     environment:
       discovery.type: single-node
-            
+    
+  client:
+    image: rss_trendy_client
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+    ports:
+      - "3000:3000"
+    
   api:
     image: rss_trendy_api
     build:
@@ -46,18 +57,7 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 5
-    
-  client:
-    image: rss_trendy_client
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /app/node_modules
-      - ./client:/app
-    ports:
-      - "3000:3000"
-      
+          
 # The network where all the containers will live
 # networks:
     # rss-network:
