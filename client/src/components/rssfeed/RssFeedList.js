@@ -120,7 +120,7 @@ const RSSFeedList = () => {
           {console.log("empty listBySearch rendered")}
           <h1 className="sr-only">Search Result</h1>
           <section>
-            <div>Search is coming.</div>
+            <div>Nothing found.</div>
           </section>
         </div>        
       )
