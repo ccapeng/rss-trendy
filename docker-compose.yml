@@ -14,7 +14,7 @@ services:
       
   elasticsearch:
     #image: elasticsearch:7.8.1
-    image: elasticsearch
+    image: elasticsearch:latest
     # container_name: rss-elasticsearch
     # networks:
     #  - rss-network
