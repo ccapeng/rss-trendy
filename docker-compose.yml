@@ -13,7 +13,8 @@ services:
       - "27017:27017"
       
   elasticsearch:
-    image: elasticsearch:7.8.1
+    #image: elasticsearch:7.8.1
+    image: elasticsearch
     # container_name: rss-elasticsearch
     # networks:
     #  - rss-network
