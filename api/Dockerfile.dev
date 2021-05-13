@@ -1,6 +1,6 @@
 FROM node:alpine
 
-# USER node
+USER node
 
 WORKDIR '/app'
 
@@ -10,5 +10,6 @@ RUN npm install --silent
 
 COPY . .
 
+USER root
 RUN npm i nodemon -g
 CMD ["npm", "run", "dev"]
