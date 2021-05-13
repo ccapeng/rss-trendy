@@ -42,9 +42,7 @@ services:
       - ESServer=elasticsearch
     ports:
       - "5000:5000"
-    links:
-      - mongodb
-      - elasticsearch
+    command: mongodb:27017 elasticsearch:9200
   client:
     image: rss_trendy_client
     build:
