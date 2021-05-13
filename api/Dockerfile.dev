@@ -10,6 +10,6 @@ RUN npm install --silent
 
 COPY . .
 
-USER root
-RUN npm i nodemon -g
+# USER root
+# RUN npm i nodemon -g
 CMD ["npm", "run", "dev"]
