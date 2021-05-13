@@ -42,8 +42,7 @@ services:
       - ESServer=elasticsearch
     ports:
       - "5000:5000"
-    # restart_policy:
-    restart:
+    restart_policy:
       condition: on-failure
       delay: 3s
       max_attempts: 5
