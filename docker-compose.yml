@@ -42,11 +42,12 @@ services:
       - ESServer=elasticsearch
     ports:
       - "5000:5000"
-    restart_policy:
-      condition: on-failure
-      delay: 3s
-      max_attempts: 5
-      window: 60s
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 5
+        window: 60s
     
   client:
     image: rss_trendy_client
