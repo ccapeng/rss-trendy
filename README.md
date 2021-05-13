@@ -2,7 +2,10 @@
 RSS news feed from New York Times, Washington Post, CNN.
 
 ## Database MongoDB  
-- Run your MongoDB in the localhost port 27017.
+- Run MongoDB in the localhost port 27017.
+
+## Elastic Search
+- Run Elastic Search in the localhost port 9200.
 
 ## Backend  
 - It's nodejs.
@@ -15,11 +18,11 @@ RSS news feed from New York Times, Washington Post, CNN.
     - Cron job to load RSS news from New York Times, Washington Post, CNN.
     - Data filtering.
     - Save data into MongoDB.
+    - Index search data into Elastic Search
     - Output REST API data.
     - Save access log and rotate daily.
-    - Machine learning: topic modeling. The current model still need to improve.
-    - Elastic search (coming).
-
+    - Machine learning: topic modeling.  
+      The current model still need to improve.
 
 ## Frontend  
 - It's React.
@@ -34,13 +37,11 @@ RSS news feed from New York Times, Washington Post, CNN.
 - To run: `docker-compose up`
     - Backend nodejs run at port 5000.
     - Frontend react run at port 3000.
-    - To check it, open browaser [http://127.0.0.1:3000](http://127.0.0.1:3000)
-    - If one of services can't start up, please run `docker-compose restart.`  
-      Both mongoDB and elastic search images take a while to download.  
-      That is the main reason to start up completely.
-      So, you can set `export COMPOSE_HTTP_TIMEOUT=240`  
+    - Use nginx as web server.  
+      To check it, open browser [http://127.0.0.1/](http://127.0.0.1/)
+    - If one of services can't start up,  
+      please run `docker-compose restart.`  
+      nginx, mongoDB and elastic search images take a while to download.  
+      That is the main reason to timeout.
+      To avoid that, you can set `export COMPOSE_HTTP_TIMEOUT=360`  
       Or, put a higher number.
-
-## Enhancements
-Some other features are coming soon.
-- Web server.
