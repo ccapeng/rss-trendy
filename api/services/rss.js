@@ -2,9 +2,9 @@ import fs from 'fs';
 import cron from 'node-cron';
 import Parser from "rss-parser";
 import { db } from "./db.js";
-import { setTopicModeling } from "./topicModeling.js";
+import { setModeling } from "./topic.js";
 import { dateTimeFormatter } from "./logger.js";
-import { pingElastic, indexSearch } from './search.js';
+import { pingSearch, indexSearch } from './search.js';
 
 const parser = new Parser();
 
@@ -81,7 +81,7 @@ const filterData = (feed, url) => {
 // Use dateTimeFormatter.format() for the consistency and better performance().
 const loadFeedItems = async() => {
 
-    let isElasticRunning = await pingElastic();
+    let isSearchRunning = await pingSearch();
     console.log("db loading items:", dateTimeFormatter.format(Date.now()));
     const itemCollection = db.collection("rssitem");
     let feedSources = await getFeedSources();
@@ -117,7 +117,7 @@ const loadFeedItems = async() => {
                     if (item.categories) {
                         categories = item.categories;
                     }
-                    let topics = setTopicModeling(title, content, categories);
+                    let topics = setModeling(title, content, categories);
                     if (topics.length > 0) {
                         item.topics = topics;
                     }
@@ -133,7 +133,7 @@ const loadFeedItems = async() => {
                 // if (result && result.insertedIds) {
                 //     console.log(`Inserted items from ${source.url}`);
                 // }
-                if (isElasticRunning) {
+                if (isSearchRunning) {
                     indexSearch(source.url, newItems);
                 }
             }
@@ -148,9 +148,9 @@ const loadFeedItems = async() => {
     );
 };
 
-// task scheduling
+// task scheduling by minutes
 let minutes =  process.env.rssReloadInterval || 5;
-const reloadFeedItems = async() => {
+const initFeed = async() => {
     await loadFeedItems();
     let now = new Date().getMinutes();
     let mod = now % minutes;
@@ -169,6 +169,6 @@ const reloadFeedItems = async() => {
 }
 
 export {
-    reloadFeedItems,
+    initFeed,
     loadFeedItems
 }

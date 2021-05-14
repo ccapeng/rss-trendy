@@ -7,7 +7,7 @@ const client = new Client({
 	log: 'trace'
 });
 
-const INDEX = "rss";
+const INDEX = process.env.ESIndex || "rss";
 
 // check that elasticsearch is up and running
 const ping = async() => {
@@ -85,6 +85,6 @@ const getSearchItems = async(search) => {
 
 export {
     index as indexSearch,
-	ping as pingElastic,
+	ping as pingSearch,
     getSearchItems
 }

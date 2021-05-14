@@ -8,7 +8,9 @@ const mongoUrl = `mongodb://${mongoDBServer}:27017/`;
 let client, db;
 
 const initDB = async(dbName) => {
-    try{
+    try {
+        dbName = dbName || process.env.DB || "rss-feed";
+        
         console.log("db url:", mongoUrl);
         client = await MongoClient.connect(
             mongoUrl, 

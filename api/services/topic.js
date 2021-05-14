@@ -2,7 +2,7 @@ import lda from 'lda';
 
 // set topic modeling
 // still looking a way to improve.
-const setTopicModeling = (title, content, categories) => {
+const setModeling = (title, content, categories) => {
 
     const getTopicsFromResults = (results, probability) => {
         for (let items of results) {
@@ -91,5 +91,5 @@ const setTopicModeling = (title, content, categories) => {
 }
 
 export {
-    setTopicModeling
+    setModeling
 }
