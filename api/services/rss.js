@@ -162,7 +162,7 @@ const initFeed = async() => {
     } while (i < 60);
     let minuteListStr = minuteList.join(",");
     let schedulePattern = `${minuteListStr} * * * *`;
-    console.log("cron job schedule pattern:", schedulePattern);
+    console.log("rss cron job schedule pattern:", schedulePattern);
     cron.schedule(schedulePattern, () => {
         loadFeedItems();
     });
