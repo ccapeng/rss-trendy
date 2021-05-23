@@ -12,6 +12,8 @@ const INDEX = process.env.ESIndex || "rss";
 // check that elasticsearch is up and running
 const ping = async() => {
     try {
+        // #TODO, need to implement a timer to get ping ready.
+        // elasticsearch takes time to start.
         await client.ping();
         console.log('elasticsearch ready:', ESUrl);
         let result = await client.indices.exists({index: INDEX});
